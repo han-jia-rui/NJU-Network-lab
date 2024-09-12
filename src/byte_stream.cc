@@ -1,5 +1,4 @@
 #include "byte_stream.hh"
-#include <cstdint>
 
 using namespace std;
 

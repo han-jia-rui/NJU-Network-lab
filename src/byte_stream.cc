@@ -1,4 +1,5 @@
 #include "byte_stream.hh"
+#include <cstdint>
 
 using namespace std;
 
@@ -6,60 +7,54 @@ ByteStream::ByteStream( uint64_t capacity ) : capacity_( capacity ) {}
 
 bool Writer::is_closed() const
 {
-  // Your code here.
-  return {};
+  return closed_;
 }
 
 void Writer::push( string data )
 {
-  // Your code here.
-  (void)data;
-  return;
+  uint64_t to_push = min( data.size(), available_capacity() );
+  buffer_.append( data.substr( 0, to_push ) );
+  pushed_ += to_push;
 }
 
 void Writer::close()
 {
-  // Your code here.
+  closed_ = true;
 }
 
 uint64_t Writer::available_capacity() const
 {
-  // Your code here.
-  return {};
+  return capacity_ - buffer_.size();
 }
 
 uint64_t Writer::bytes_pushed() const
 {
-  // Your code here.
-  return {};
+  return pushed_;
 }
 
 bool Reader::is_finished() const
 {
-  // Your code here.
-  return {};
+  return buffer_.empty() && closed_;
 }
 
 uint64_t Reader::bytes_popped() const
 {
-  // Your code here.
-  return {};
+  return popped_;
 }
 
 string_view Reader::peek() const
 {
-  // Your code here.
-  return {};
+  return string_view( buffer_ );
 }
 
 void Reader::pop( uint64_t len )
 {
-  // Your code here.
-  (void)len;
+  uint64_t to_pop = min( len, buffer_.size() );
+  buffer_.erase( 0, to_pop );
+  popped_ += to_pop;
 }
 
 uint64_t Reader::bytes_buffered() const
 {
-  // Your code here.
-  return {};
+  return buffer_.size();
 }

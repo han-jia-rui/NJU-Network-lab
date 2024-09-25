@@ -18,7 +18,7 @@ void get_URL( const string& host, const string& path )
   socket.connect( address );
   socket.write( message );
   socket.read( response );
-  while ( !response.empty() ) {
+  while ( !socket.eof() ) {
     cout << response;
     socket.read( response );
   }

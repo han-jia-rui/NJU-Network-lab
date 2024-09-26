@@ -1,7 +1,5 @@
 #include "byte_stream.hh"
 
-using namespace std;
-
 ByteStream::ByteStream( uint64_t capacity ) : capacity_( capacity ) {}
 
 bool Writer::is_closed() const
@@ -9,10 +7,12 @@ bool Writer::is_closed() const
   return closed_;
 }
 
-void Writer::push( string data )
+void Writer::push( std::string data )
 {
-  uint64_t to_push = min( data.size(), available_capacity() );
-  buffer_.append( data.substr( 0, to_push ) );
+  uint64_t to_push = std::min( data.size(), available_capacity() );
+  if ( to_push < data.size() )
+    data.erase( to_push ); // Keep only the part to be moved
+  buffer_.append( std::move( data ) );
   pushed_ += to_push;
 }
 
@@ -41,14 +41,14 @@ uint64_t Reader::bytes_popped() const
   return popped_;
 }
 
-string_view Reader::peek() const
+std::string_view Reader::peek() const
 {
-  return string_view( buffer_ );
+  return std::string_view( buffer_ );
 }
 
 void Reader::pop( uint64_t len )
 {
-  uint64_t to_pop = min( len, buffer_.size() );
+  uint64_t to_pop = std::min( len, buffer_.size() );
   buffer_.erase( 0, to_pop );
   popped_ += to_pop;
 }

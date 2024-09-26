@@ -1,9 +1,9 @@
 set shell := ["zsh", "-uc"]
 
-default:
-  build
+default:build
 
 build:
+  cmake -S . -B build
   cmake --build build
 
 test:

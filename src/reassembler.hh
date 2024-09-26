@@ -1,6 +1,8 @@
 #pragma once
 
 #include "byte_stream.hh"
+#include <map>
+#include <string>
 
 class Reassembler
 {
@@ -41,5 +43,11 @@ public:
   const Writer& writer() const { return output_.writer(); }
 
 private:
+  using scope = std::pair<uint64_t, uint64_t>;
   ByteStream output_; // the Reassembler writes to this ByteStream
+  uint64_t index_ { 0 };
+  uint64_t pending_ { 0 };
+  uint64_t last_index_ { 0 };
+  bool received_last_ { false };
+  std::map<scope, std::string> buffer_ {};
 };

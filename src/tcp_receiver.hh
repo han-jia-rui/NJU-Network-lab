@@ -8,11 +8,13 @@ class TCPReceiver
 {
 public:
   // Construct with given Reassembler
-  explicit TCPReceiver( Reassembler&& reassembler ) : reassembler_( std::move( reassembler ) ) {}
+  explicit TCPReceiver( Reassembler&& reassembler )
+    : reassembler_( std::move( reassembler ) )
+  {}
 
   /*
-   * The TCPReceiver receives TCPSenderMessages, inserting their payload into the Reassembler
-   * at the correct stream index.
+   * The TCPReceiver receives TCPSenderMessages, inserting their payload into the
+   * Reassembler at the correct stream index.
    */
   void receive( TCPSenderMessage message );
 
@@ -27,4 +29,7 @@ public:
 
 private:
   Reassembler reassembler_;
+  bool SYN_received_ { false };
+  Wrap32 zero_point { 0 };
+  uint64_t abs_seqno_ { 0 };
 };

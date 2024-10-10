@@ -17,8 +17,9 @@ public:
   static Wrap32 wrap( uint64_t n, Wrap32 zero_point );
 
   /*
-   * The unwrap method returns an absolute sequence number that wraps to this Wrap32, given the zero point
-   * and a "checkpoint": another absolute sequence number near the desired answer.
+   * The unwrap method returns an absolute sequence number that wraps to this Wrap32,
+   * given the zero point and a "checkpoint": another absolute sequence number near the
+   * desired answer.
    *
    * There are many possible absolute sequence numbers that all wrap to the same Wrap32.
    * The unwrap method should return the one that is closest to the checkpoint.

@@ -18,15 +18,15 @@ public:
    *   `output`: a mutable reference to the Writer
    *
    * The Reassembler's job is to reassemble the indexed substrings (possibly out-of-order
-   * and possibly overlapping) back into the original ByteStream. As soon as the Reassembler
-   * learns the next byte in the stream, it should write it to the output.
+   * and possibly overlapping) back into the original ByteStream. As soon as the
+   * Reassembler learns the next byte in the stream, it should write it to the output.
    *
    * If the Reassembler learns about bytes that fit within the stream's available capacity
    * but can't yet be written (because earlier bytes remain unknown), it should store them
    * internally until the gaps are filled in.
    *
-   * The Reassembler should discard any bytes that lie beyond the stream's available capacity
-   * (i.e., bytes that couldn't be written even if earlier gaps get filled in).
+   * The Reassembler should discard any bytes that lie beyond the stream's available
+   * capacity (i.e., bytes that couldn't be written even if earlier gaps get filled in).
    *
    * The Reassembler should close the stream after writing the last byte.
    */
@@ -44,10 +44,10 @@ public:
 
 private:
   using scope = std::pair<uint64_t, uint64_t>;
-  ByteStream output_; // the Reassembler writes to this ByteStream
-  uint64_t index_ { 0 };
-  uint64_t pending_ { 0 };
-  uint64_t last_index_ { 0 };
-  bool received_last_ { false };
-  std::map<scope, std::string> buffer_ {};
+  ByteStream output_;                      // the Reassembler writes to this ByteStream
+  uint64_t index_ { 0 };                   // the next index to write to
+  uint64_t pending_ { 0 };                 // the number of bytes pending to be written
+  uint64_t last_index_ { 0 };              // the last index of the last substring
+  bool received_last_ { false };           // whether the last substring has been received
+  std::map<scope, std::string> buffer_ {}; // the buffer to store the data
 };

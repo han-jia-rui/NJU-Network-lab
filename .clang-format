@@ -1,7 +1,7 @@
 ---
 Language: Cpp
 BasedOnStyle: Mozilla
-ColumnLimit: 116
+ColumnLimit: 90
 SpacesInParentheses: true
 AlwaysBreakAfterReturnType: None
 AlwaysBreakAfterDefinitionReturnType: None
@@ -20,4 +20,3 @@ BraceWrapping:
   SplitEmptyRecord: false
   SplitEmptyNamespace: false
 PackConstructorInitializers: NextLine
-...

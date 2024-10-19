@@ -8,7 +8,7 @@ void TCPReceiver::receive( TCPSenderMessage message )
     return;
   }
 
-  if ( !( SYN_received_ || message.SYN ) || writer().has_error() )
+  if ( ( !SYN_received_ && !message.SYN ) || writer().has_error() )
     return;
 
   if ( message.SYN ) {

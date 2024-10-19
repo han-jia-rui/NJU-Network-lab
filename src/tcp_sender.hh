@@ -6,10 +6,34 @@
 
 #include <cstdint>
 #include <functional>
-#include <list>
-#include <memory>
-#include <optional>
 #include <queue>
+
+class Timer
+{
+public:
+  Timer() = default;
+  bool started() const { return started_; }
+  void reset()
+  {
+    time_ = 0;
+    started_ = false;
+  }
+  void restart()
+  {
+    time_ = 0;
+    started_ = true;
+  }
+  void tick( uint64_t ms )
+  {
+    if ( started_ )
+      time_ += ms;
+  }
+  bool expired( uint64_t ms ) const { return started_ && time_ >= ms; }
+
+private:
+  bool started_ { false };
+  uint64_t time_ { 0 };
+};
 
 class TCPSender
 {
@@ -25,18 +49,22 @@ public:
   /* Receive and process a TCPReceiverMessage from the peer's receiver */
   void receive( const TCPReceiverMessage& msg );
 
-  /* Type of the `transmit` function that the push and tick methods can use to send messages */
+  /* Type of the `transmit` function that the push and tick methods can use to send
+   * messages */
   using TransmitFunction = std::function<void( const TCPSenderMessage& )>;
 
   /* Push bytes from the outbound stream */
   void push( const TransmitFunction& transmit );
 
-  /* Time has passed by the given # of milliseconds since the last time the tick() method was called */
+  /* Time has passed by the given # of milliseconds since the last time the tick() method
+   * was called */
   void tick( uint64_t ms_since_last_tick, const TransmitFunction& transmit );
 
   // Accessors
-  uint64_t sequence_numbers_in_flight() const;  // How many sequence numbers are outstanding?
-  uint64_t consecutive_retransmissions() const; // How many consecutive *re*transmissions have happened?
+  uint64_t sequence_numbers_in_flight()
+    const; // How many sequence numbers are outstanding?
+  uint64_t consecutive_retransmissions()
+    const; // How many consecutive *re*transmissions have happened?
   Writer& writer() { return input_.writer(); }
   const Writer& writer() const { return input_.writer(); }
 
@@ -48,4 +76,25 @@ private:
   ByteStream input_;
   Wrap32 isn_;
   uint64_t initial_RTO_ms_;
+
+  // Helper functions and variables
+  struct Segment
+  {
+    bool SYN { false };
+    bool FIN { false };
+    bool RST { false };
+    uint64_t seqno { 0 };
+    std::string data {};
+    size_t sequence_length() const { return SYN + data.size() + FIN; }
+  };
+  void transmit_wrapper( Segment& seg,
+                         const TransmitFunction& transmit,
+                         bool track = true );
+  std::queue<Segment> buffer_ {};
+  Timer timer {};
+  uint64_t RTO_ratio_ { 1 };
+  uint64_t ack_base_ { 0 };
+  uint64_t seq_current_ { 0 };
+  uint16_t window_size_ { 1 }; // Assume window size is 1 before SYN
+  uint64_t consecutive_retransmissions_ { 0 };
 };

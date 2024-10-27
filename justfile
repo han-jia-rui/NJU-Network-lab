@@ -20,3 +20,9 @@ format:
 
 check point:
   cmake --build build --target check{{point}}
+
+line-of-code:
+  python ./scripts/lines-of-code
+
+clean:
+  rm -rf ./build

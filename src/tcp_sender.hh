@@ -13,11 +13,7 @@ class Timer
 public:
   Timer() = default;
   bool started() const { return started_; }
-  void reset()
-  {
-    time_ = 0;
-    started_ = false;
-  }
+  void stop() { started_ = false; }
   void restart()
   {
     time_ = 0;
@@ -85,7 +81,7 @@ private:
     bool RST { false };
     uint64_t seqno { 0 };
     std::string data {};
-    size_t sequence_length() const { return SYN + data.size() + FIN; }
+    size_t length() const { return SYN + data.size() + FIN; }
   };
   void transmit_wrapper( Segment& seg,
                          const TransmitFunction& transmit,

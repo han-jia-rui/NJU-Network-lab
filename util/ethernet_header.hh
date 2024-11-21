@@ -12,6 +12,9 @@ using EthernetAddress = std::array<uint8_t, 6>;
 // Ethernet broadcast address (ff:ff:ff:ff:ff:ff)
 constexpr EthernetAddress ETHERNET_BROADCAST = { 0xff, 0xff, 0xff, 0xff, 0xff, 0xff };
 
+// Ethernet default address (00:00:00:00:00:00)
+constexpr EthernetAddress ETHERNET_DEFAULT = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
+
 // Printable representation of an EthernetAddress
 std::string to_string( EthernetAddress address );
 

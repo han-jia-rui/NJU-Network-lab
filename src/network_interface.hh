@@ -84,16 +84,6 @@ public:
   // Called periodically when time elapses
   void tick( size_t ms_since_last_tick );
 
-  // Construct a Ethernet frame from
-  EthernetFrame encapsulate( const std::vector<std::string>& payload,
-                             const EthernetAddress& dest_address,
-                             const uint16_t type ) const;
-
-  // Query the Ethernet address for a specific IPv4 address
-  void send_arp_message( const IPv4Address& dest_ip,
-                         const EthernetAddress& dest_ethernet,
-                         const uint16_t opcode ) const;
-
   // Accessors
   const std::string& name() const { return name_; }
   const OutputPort& output() const { return *port_; }
@@ -129,4 +119,14 @@ private:
   static constexpr size_t max_cached_time_ms = 30000;
   // Map from IPv4 address to Ethernet address
   std::map<IPv4Address, TimerWrapper<EthernetAddress>> arp_table_ {};
+
+  // Construct a Ethernet frame from
+  EthernetFrame encapsulate( const std::vector<std::string>& payload,
+                             const EthernetAddress& dest_address,
+                             const uint16_t type ) const;
+
+  // Query the Ethernet address for a specific IPv4 address
+  void send_arp_message( const IPv4Address& dest_ip,
+                         const EthernetAddress& dest_ethernet,
+                         const uint16_t opcode ) const;
 };

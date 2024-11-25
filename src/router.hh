@@ -6,6 +6,26 @@
 #include "exception.hh"
 #include "network_interface.hh"
 
+using Entry = std::pair<std::optional<Address>, size_t>;
+
+class ip_table
+{
+public:
+  void add_route( uint32_t route_prefix, uint8_t prefix_length, Entry& entry );
+
+  std::optional<Entry> route( uint32_t ip_address );
+
+private:
+  struct node
+  {
+    uint32_t depth = 0;
+    std::unique_ptr<node> next[2];
+    bool hold = false;
+    Entry entry {};
+  };
+  std::unique_ptr<node> root = std::make_unique<node>();
+};
+
 // \brief A router that has multiple network interfaces and
 // performs longest-prefix-match routing between them.
 class Router
@@ -35,4 +55,5 @@ public:
 private:
   // The router's collection of network interfaces
   std::vector<std::shared_ptr<NetworkInterface>> _interfaces {};
+  ip_table table {};
 };

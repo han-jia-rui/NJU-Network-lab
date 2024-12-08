@@ -1,5 +1,6 @@
 #include "router.hh"
 #include "ipv4_datagram.hh"
+#include <optional>
 
 using namespace std;
 
@@ -60,8 +61,7 @@ void ip_table::add_route( uint32_t route_prefix, uint8_t prefix_length, Entry& e
     cur = cur->next[bit].get();
   }
 
-  cur->hold = true;
-  cur->entry = std::move( entry );
+  cur->entry = std::make_optional<Entry>( std::move( entry ) );
 }
 
 std::optional<Entry> ip_table::route( uint32_t ip_address )
@@ -73,8 +73,8 @@ std::optional<Entry> ip_table::route( uint32_t ip_address )
   while ( depth < 32 ) {
     uint8_t bit = ( ip_address >> ( 31 - depth ) ) & 1;
 
-    if ( cur->hold )
-      ret = std::make_optional<Entry>( cur->entry );
+    if ( cur->entry.has_value() )
+      ret = cur->entry;
 
     if ( !cur->next[bit] )
       break;

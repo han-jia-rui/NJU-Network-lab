@@ -20,8 +20,7 @@ private:
   {
     uint32_t depth = 0;
     std::unique_ptr<node> next[2];
-    bool hold = false;
-    Entry entry {};
+    std::optional<Entry> entry {};
   };
   std::unique_ptr<node> root = std::make_unique<node>();
 };

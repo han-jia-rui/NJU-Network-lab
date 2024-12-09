@@ -28,11 +28,14 @@ void Router::route()
 {
   for ( auto& interface : _interfaces ) {
     auto& received_datagrams = interface->datagrams_received();
+
     while ( !received_datagrams.empty() ) {
       InternetDatagram datagram = received_datagrams.front();
       received_datagrams.pop();
+
       if ( datagram.header.ttl <= 1 )
         continue;
+
       std::optional<Entry> result = table.route( datagram.header.dst );
       if ( result.has_value() ) {
         datagram.header.ttl--;
